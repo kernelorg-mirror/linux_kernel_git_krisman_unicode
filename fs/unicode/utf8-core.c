@@ -6,6 +6,7 @@
 #include <linux/parser.h>
 #include <linux/errno.h>
 #include <linux/unicode.h>
+#include <linux/fs.h>
 
 #include "utf8n.h"
 
@@ -211,5 +212,59 @@ void utf8_unload(struct unicode_map *um)
 	kfree(um);
 }
 EXPORT_SYMBOL(utf8_unload);
+
+static ssize_t latest_version_show(struct kobject *kobj,
+				   struct kobj_attribute *attr, char *buf)
+{
+	int l = utf8version_latest();
+
+	return snprintf(buf, PAGE_SIZE, "%d.%d.%d\n",
+			UNICODE_AGE_MAJ(l), UNICODE_AGE_MIN(l),
+			UNICODE_AGE_REV(l));
+}
+
+#define UNICODE_ATTR(x)						\
+	static struct kobj_attribute x ## _attr = __ATTR_RO(x)
+
+UNICODE_ATTR(latest_version);
+
+static struct attribute *encoding_attrs[] = {
+	&latest_version_attr.attr,
+	NULL,
+};
+static const struct attribute_group encoding_attr_group = {
+	.attrs = encoding_attrs,
+};
+
+static struct kobject *unicode_kobj;
+static struct kobject *utf8_kobj;
+
+static int __init unicode_init(void)
+{
+	int ret = 0;
+
+	unicode_kobj = kobject_create_and_add("unicode", fs_kobj);
+	if (!unicode_kobj)
+		return -ENOMEM;
+
+	utf8_kobj = kobject_create_and_add("utf-8", unicode_kobj);
+	if (!utf8_kobj) {
+		ret = -ENOMEM;
+		goto fail_unicode;
+	}
+
+	ret = sysfs_create_group(utf8_kobj, &encoding_attr_group);
+	if (ret)
+		goto fail_utf8;
+
+	return 0;
+
+fail_utf8:
+	kobject_put(utf8_kobj);
+fail_unicode:
+	kobject_put(unicode_kobj);
+	return ret;
+}
+fs_initcall(unicode_init);
 
 MODULE_LICENSE("GPL v2");

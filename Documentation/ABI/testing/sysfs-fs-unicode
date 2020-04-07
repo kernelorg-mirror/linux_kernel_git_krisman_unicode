@@ -1,0 +1,6 @@
+What:		/sys/fs/unicode/<encoding>/latest_version
+Date:		April 2020
+Contact:	Gabriel Krisman Bertazi <krisman@collabora.com>
+Description:
+		The latest version of the Unicode Standard supported by
+		this encoding in this kernel.

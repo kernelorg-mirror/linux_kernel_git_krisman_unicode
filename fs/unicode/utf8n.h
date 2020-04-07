@@ -21,6 +21,10 @@
 	 ((unsigned int)(MIN) << UNICODE_MIN_SHIFT) |	\
 	 ((unsigned int)(REV)))
 
+#define UNICODE_AGE_MAJ(x) ((x) >> UNICODE_MAJ_SHIFT & 0xff)
+#define UNICODE_AGE_MIN(x) ((x) >> UNICODE_MIN_SHIFT & 0xff)
+#define UNICODE_AGE_REV(x) ((x) & 0xff)
+
 /* Highest unicode version supported by the data tables. */
 extern int utf8version_is_supported(u8 maj, u8 min, u8 rev);
 extern int utf8version_latest(void);
