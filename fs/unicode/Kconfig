@@ -9,7 +9,7 @@ config UNICODE
 	  support.
 
 config UNICODE_KUNIT_TESTS
-	bool "KUnit tests for Unicode normalization and casefolding support"
+	tristate "KUnit tests for Unicode normalization and casefolding support"
 	depends on UNICODE && KUNIT
 	default n
 	help
