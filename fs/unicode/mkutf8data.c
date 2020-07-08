@@ -244,7 +244,7 @@ utf8trie_t *nfdicf;
  * The shortest sequence requirement was introduced by:
  *    Corrigendum #1: UTF-8 Shortest Form
  * It can be found here:
- *    http://www.unicode.org/versions/corrigendum1.html
+ *    https://www.unicode.org/versions/corrigendum1.html
  *
  */
 
